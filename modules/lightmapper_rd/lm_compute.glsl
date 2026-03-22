@@ -1093,16 +1093,16 @@ void main() {
 		for (uint j = 0; j < 9; j++) { //accum from existing
 			probe_sh_accum[j] *= 4.0 / float(params.ray_count);
 		}
-	}
 
-	for (uint i = 0; i < bake_params.light_count; i++) {
-		if (lights.data[i].static_bake) {
-			vec3 light_dir;
-			vec3 light;
-			float shadow;
-			trace_direct_light(position, vec3(0.0), i, false, light, light_dir, noise, 1.0, shadow);
+		for (uint i = 0; i < bake_params.light_count; i++) {
+			if (lights.data[i].static_bake) {
+				vec3 light_dir;
+				vec3 light;
+				float shadow;
+				trace_direct_light(position, vec3(0.0), i, false, light, light_dir, noise, 1.0, shadow);
 
-			accumilate_probe_light(light_dir, light, probe_sh_accum);
+				accumilate_probe_light(light_dir, light, probe_sh_accum);
+			}
 		}
 	}
 
