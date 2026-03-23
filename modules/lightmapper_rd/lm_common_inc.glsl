@@ -68,6 +68,11 @@ triangle_indices;
 #define LIGHT_TYPE_OMNI 1
 #define LIGHT_TYPE_SPOT 2
 
+#define LIGHT_BAKE_DISABLED 0
+#define LIGHT_BAKE_STATIC 1
+#define LIGHT_BAKE_DYNAMIC 2
+#define LIGHT_BAKE_STATIC_BAKED 3
+
 struct Light {
 	vec3 position;
 	uint type;
@@ -85,7 +90,7 @@ struct Light {
 
 	float indirect_energy;
 	float shadow_blur;
-	bool static_bake;
+	uint bake_mode;
 	uint pad;
 };
 

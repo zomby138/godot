@@ -857,7 +857,7 @@ void RendererSceneCull::instance_set_scenario(RID p_instance, RID p_scenario) {
 		switch (instance->base_type) {
 			case RSE::INSTANCE_LIGHT: {
 				InstanceLightData *light = static_cast<InstanceLightData *>(instance->base_data);
-				if (light->bake_mode != RSE::LIGHT_BAKE_STATIC_BAKED) {
+				//if (light->bake_mode != RSE::LIGHT_BAKE_STATIC_BAKED) {
 					if (instance->visible && RSG::light_storage->light_get_type(instance->base) != RSE::LIGHT_DIRECTIONAL && light->bake_mode == RSE::LIGHT_BAKE_DYNAMIC) {
 						instance->scenario->dynamic_lights.erase(light->instance);
 					}
@@ -871,7 +871,7 @@ void RendererSceneCull::instance_set_scenario(RID p_instance, RID p_scenario) {
 						instance->scenario->directional_lights.erase(light->D);
 						light->D = nullptr;
 					}
-				}
+				//}
 			} break;
 			case RSE::INSTANCE_REFLECTION_PROBE: {
 				InstanceReflectionProbeData *reflection_probe = static_cast<InstanceReflectionProbeData *>(instance->base_data);
@@ -1646,9 +1646,11 @@ void RendererSceneCull::_update_instance(Instance *p_instance) const {
 
 	if (p_instance->base_type == RSE::INSTANCE_LIGHT) {
 		InstanceLightData *light = static_cast<InstanceLightData *>(p_instance->base_data);
-		if (light->bake_mode == RSE::LIGHT_BAKE_STATIC_BAKED) {
-			return;
-		}
+		
+		//if (bake_mode == RSE::LIGHT_BAKE_STATIC_BAKED) { // this one
+			//return;
+		//}
+		//if (light->bake_mode != RSE::LIGHT_BAKE_STATIC_BAKED) {
 
 		RSG::light_storage->light_instance_set_transform(light->instance, *instance_xform);
 		RSG::light_storage->light_instance_set_aabb(light->instance, instance_xform->xform(p_instance->aabb));
@@ -1672,6 +1674,7 @@ void RendererSceneCull::_update_instance(Instance *p_instance) const {
 			light->max_sdfgi_cascade = max_sdfgi_cascade; //should most likely make sdfgi dirty in scenario
 		}
 		light->cull_mask = RSG::light_storage->light_get_cull_mask(p_instance->base);
+		//}
 	} else if (p_instance->base_type == RSE::INSTANCE_REFLECTION_PROBE) {
 		InstanceReflectionProbeData *reflection_probe = static_cast<InstanceReflectionProbeData *>(p_instance->base_data);
 
@@ -3208,9 +3211,9 @@ void RendererSceneCull::_scene_cull(CullData &cull_data, InstanceCullResult &cul
 
 				if (base_type == RSE::INSTANCE_LIGHT) {
 					InstanceLightData *instance_light = (InstanceLightData *)idata.instance->base_data;
-					if (instance_light->bake_mode == RSE::LIGHT_BAKE_STATIC_BAKED) { // Seems unnecessary
-						continue;
-					}
+					//if (instance_light->bake_mode == RSE::LIGHT_BAKE_STATIC_BAKED) { // Seems unnecessary
+					//	continue;
+					//}
 					if (instance_light->bake_mode == RSE::LIGHT_BAKE_STATIC && cull_data.cull->sdfgi.region_cascade[j] <= instance_light->max_sdfgi_cascade) {
 						if (sdfgi_last_light_index != i || sdfgi_last_light_cascade != cull_data.cull->sdfgi.region_cascade[j]) {
 							sdfgi_last_light_index = i;
@@ -3881,13 +3884,14 @@ void RendererSceneCull::render_probes() {
 			}
 
 			for (const Instance *instance : probe->owner->scenario->directional_lights) {
+				if (!instance->visible) {
+					continue;
+				}
 				InstanceLightData *instance_light = (InstanceLightData *)instance->base_data;
 				if (instance_light->bake_mode == RSE::LIGHT_BAKE_STATIC_BAKED) {
 					continue;
 				}
-				if (!instance->visible) {
-					continue;
-				}
+				
 				if (cache_dirty) {
 					//do nothing, since idx must count all visible lights anyway
 				} else if (idx >= light_cache_size) {
@@ -3936,11 +3940,11 @@ void RendererSceneCull::render_probes() {
 				int idx = 0; //must count visible lights
 				for (Instance *E : probe->lights) {
 					Instance *instance = E;
-					InstanceLightData *instance_light = (InstanceLightData *)instance->base_data;
-					if (instance_light->bake_mode == RSE::LIGHT_BAKE_STATIC_BAKED) {
+					if (!instance->visible) {
 						continue;
 					}
-					if (!instance->visible) {
+					InstanceLightData *instance_light = (InstanceLightData *)instance->base_data;
+					if (instance_light->bake_mode == RSE::LIGHT_BAKE_STATIC_BAKED) {
 						continue;
 					}
 
@@ -3962,13 +3966,13 @@ void RendererSceneCull::render_probes() {
 					idx++;
 				}
 				for (const Instance *instance : probe->owner->scenario->directional_lights) {
-					InstanceLightData *instance_light = (InstanceLightData *)instance->base_data;
-					if (instance_light->bake_mode == RSE::LIGHT_BAKE_STATIC_BAKED) {
-						continue;
-					}
 					if (!instance->visible) {
 						continue;
 					}
+					InstanceLightData *instance_light = (InstanceLightData *)instance->base_data;
+					if (instance_light->bake_mode == RSE::LIGHT_BAKE_STATIC_BAKED) {
+						continue;
+					}		
 
 					InstanceVoxelGIData::LightCache *cache = &caches[idx];
 
