@@ -343,6 +343,7 @@ private:
 		float distance_fade_begin = 40.0;
 		float distance_fade_length = 10.0;
 		float normal_fade = 0.0;
+		uint32_t albedo_blend_mode = 0;
 
 		Dependency dependency;
 	};
@@ -379,6 +380,10 @@ private:
 		float normal_xform[12];
 		float normal[3];
 		float normal_fade;
+		uint32_t albedo_blend_mode;
+		uint32_t padding;
+		uint32_t padding2;
+		uint32_t padding3;
 	};
 
 	struct DecalInstanceSort {
@@ -725,6 +730,7 @@ public:
 	virtual void decal_set_size(RID p_decal, const Vector3 &p_size) override;
 	virtual void decal_set_texture(RID p_decal, RSE::DecalTexture p_type, RID p_texture) override;
 	virtual void decal_set_emission_energy(RID p_decal, float p_energy) override;
+	virtual void decal_set_albedo_blend_mode(RID p_decal, int p_blend) override;
 	virtual void decal_set_albedo_mix(RID p_decal, float p_mix) override;
 	virtual void decal_set_modulate(RID p_decal, const Color &p_modulate) override;
 	virtual void decal_set_cull_mask(RID p_decal, uint32_t p_layers) override;
@@ -756,6 +762,11 @@ public:
 	_FORCE_INLINE_ float decal_get_emission_energy(RID p_decal) {
 		const Decal *decal = decal_owner.get_or_null(p_decal);
 		return decal->emission_energy;
+	}
+
+	_FORCE_INLINE_ int decal_get_albedo_blend_mode(RID p_decal) {
+		const Decal *decal = decal_owner.get_or_null(p_decal);
+		return decal->albedo_blend_mode;
 	}
 
 	_FORCE_INLINE_ float decal_get_albedo_mix(RID p_decal) {

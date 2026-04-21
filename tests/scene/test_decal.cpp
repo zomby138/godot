@@ -75,6 +75,12 @@ TEST_CASE("[SceneTree][Decal] Getters/Setters") {
 		CHECK_MESSAGE(default_aabb == decal->get_aabb(), "get_aabb() remains unchanged after setting emission energy.");
 	}
 
+	SUBCASE("Set and Get Albedo Blend Mode") {
+		decal->set_albedo_blend_mode(0);
+		CHECK_MESSAGE(decal->get_albedo_blend_mode() == 0, "get_albedo_blend_mode() returns the expected value after setting.");
+		CHECK_MESSAGE(default_aabb == decal->get_aabb(), "get_aabb() remains unchanged after setting albedo mix.");
+	}
+
 	SUBCASE("Set and Get Albedo Mix") {
 		decal->set_albedo_mix(0.5);
 		CHECK_MESSAGE(decal->get_albedo_mix() == 0.5f, "get_albedo_mix() returns the expected value after setting.");

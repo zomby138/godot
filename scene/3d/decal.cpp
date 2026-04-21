@@ -80,6 +80,15 @@ real_t Decal::get_emission_energy() const {
 	return emission_energy;
 }
 
+void Decal::set_albedo_blend_mode(int p_blend) {
+	albedo_blend_mode = p_blend;
+	RS::get_singleton()->decal_set_albedo_blend_mode(decal, albedo_blend_mode);
+}
+
+int Decal::get_albedo_blend_mode() const {
+	return albedo_blend_mode;
+}
+
 void Decal::set_albedo_mix(real_t p_mix) {
 	albedo_mix = p_mix;
 	RS::get_singleton()->decal_set_albedo_mix(decal, albedo_mix);
@@ -209,7 +218,10 @@ void Decal::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_emission_energy", "energy"), &Decal::set_emission_energy);
 	ClassDB::bind_method(D_METHOD("get_emission_energy"), &Decal::get_emission_energy);
 
-	ClassDB::bind_method(D_METHOD("set_albedo_mix", "energy"), &Decal::set_albedo_mix);
+	ClassDB::bind_method(D_METHOD("set_albedo_blend_mode", "blend"), &Decal::set_albedo_blend_mode);
+	ClassDB::bind_method(D_METHOD("get_albedo_blend_mode"), &Decal::get_albedo_blend_mode);
+
+	ClassDB::bind_method(D_METHOD("set_albedo_mix", "mix"), &Decal::set_albedo_mix);
 	ClassDB::bind_method(D_METHOD("get_albedo_mix"), &Decal::get_albedo_mix);
 
 	ClassDB::bind_method(D_METHOD("set_modulate", "color"), &Decal::set_modulate);
@@ -249,6 +261,7 @@ void Decal::_bind_methods() {
 	ADD_GROUP("Parameters", "");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "emission_energy", PROPERTY_HINT_RANGE, "0,16,0.01,or_greater"), "set_emission_energy", "get_emission_energy");
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "modulate"), "set_modulate", "get_modulate");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "albedo_blend_mode", PROPERTY_HINT_ENUM, "Mix,Multiply,Darken"), "set_albedo_blend_mode", "get_albedo_blend_mode");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "albedo_mix", PROPERTY_HINT_RANGE, "0,1,0.01"), "set_albedo_mix", "get_albedo_mix");
 	// A Normal Fade of 1.0 causes the decal to be invisible even if fully perpendicular to a surface.
 	// Due to this, limit Normal Fade to 0.999.

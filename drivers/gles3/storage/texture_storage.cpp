@@ -2511,6 +2511,9 @@ void TextureStorage::decal_set_texture(RID p_decal, RSE::DecalTexture p_type, RI
 void TextureStorage::decal_set_emission_energy(RID p_decal, float p_energy) {
 }
 
+void TextureStorage::decal_set_albedo_blend_mode(RID p_decal, int p_blend) {
+}
+
 void TextureStorage::decal_set_albedo_mix(RID p_decal, float p_mix) {
 }
 

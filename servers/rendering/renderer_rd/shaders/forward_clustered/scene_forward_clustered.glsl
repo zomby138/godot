@@ -1599,7 +1599,16 @@ void fragment_shader(in SceneData scene_data) {
 					}
 					decal_albedo *= decals.data[decal_index].modulate;
 					decal_albedo.a *= fade;
-					albedo = mix(albedo, decal_albedo.rgb, decal_albedo.a * decals.data[decal_index].albedo_mix);
+
+					if (decals.data[decal_index].albedo_blend_mode == 0) {
+						albedo = mix(albedo, decal_albedo.rgb, decal_albedo.a * decals.data[decal_index].albedo_mix);
+					} else if (decals.data[decal_index].albedo_blend_mode == 1) {
+						albedo = mix(albedo, albedo * decal_albedo.rgb, decal_albedo.a * decals.data[decal_index].albedo_mix);
+					} else if (decals.data[decal_index].albedo_blend_mode == 2) {
+						albedo.r = mix(albedo.r, min(albedo.r, decal_albedo.r), decal_albedo.a * decals.data[decal_index].albedo_mix);
+						albedo.g = mix(albedo.g, min(albedo.g, decal_albedo.g), decal_albedo.a * decals.data[decal_index].albedo_mix);
+						albedo.b = mix(albedo.b, min(albedo.b, decal_albedo.b), decal_albedo.a * decals.data[decal_index].albedo_mix);
+					}
 
 					if (decals.data[decal_index].normal_rect != vec4(0.0)) {
 						vec3 decal_normal;

@@ -3646,6 +3646,12 @@ void TextureStorage::decal_set_emission_energy(RID p_decal, float p_energy) {
 	decal->emission_energy = p_energy;
 }
 
+void TextureStorage::decal_set_albedo_blend_mode(RID p_decal, int p_blend) {
+	Decal *decal = decal_owner.get_or_null(p_decal);
+	ERR_FAIL_NULL(decal);
+	decal->albedo_blend_mode = p_blend;
+}
+
 void TextureStorage::decal_set_albedo_mix(RID p_decal, float p_mix) {
 	Decal *decal = decal_owner.get_or_null(p_decal);
 	ERR_FAIL_NULL(decal);
@@ -4169,6 +4175,7 @@ void TextureStorage::update_decal_buffer(const PagedArray<RID> &p_decals, const 
 		dd.mask = decal->cull_mask;
 		dd.upper_fade = decal->upper_fade;
 		dd.lower_fade = decal->lower_fade;
+		dd.albedo_blend_mode = decal->albedo_blend_mode;
 
 		// hook for subclass to do further processing.
 		RendererSceneRenderRD::get_singleton()->setup_added_decal(xform, decal_extents);

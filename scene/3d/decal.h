@@ -49,6 +49,7 @@ private:
 	Vector3 size = Vector3(2, 2, 2);
 	Ref<Texture2D> textures[TEXTURE_MAX];
 	real_t emission_energy = 1.0;
+	int albedo_blend_mode = 0;
 	real_t albedo_mix = 1.0;
 	Color modulate = Color(1, 1, 1, 1);
 	uint32_t cull_mask = (1 << 20) - 1;
@@ -78,6 +79,9 @@ public:
 
 	void set_emission_energy(real_t p_energy);
 	real_t get_emission_energy() const;
+
+	void set_albedo_blend_mode(int p_blend);
+	int get_albedo_blend_mode() const;
 
 	void set_albedo_mix(real_t p_mix);
 	real_t get_albedo_mix() const;
